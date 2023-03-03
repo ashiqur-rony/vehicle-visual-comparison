@@ -9,7 +9,7 @@ function load_data(type) {
 }
 
 // Define the global variables for the visualization
-let cars, x_variable = 'MPG', y_variable = 'Cylinders', cars_color, attributes, axis_keys;
+let cars, x_variable = 'MPG', y_variable = 'Horsepower', cars_color, attributes, axis_keys;
 let default_filter = {
     'Model': false,
     'Origin': false,
