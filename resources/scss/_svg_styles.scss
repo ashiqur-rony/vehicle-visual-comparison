@@ -42,9 +42,10 @@ svg {
   }
 }
 
-.sentiment-tooltip {
+.car-tooltip {
   fill: #2c3e50;
   font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
 
   text {
     tspan {

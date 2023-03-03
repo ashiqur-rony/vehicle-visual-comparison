@@ -156,11 +156,9 @@ function draw_color_legends(cars_color_scheme) {
 function draw_cars_visualization() {
 
     let keys_to_filter = Object.keys(active_filter).filter(k => (k !== 'Model' && active_filter[k] !== false));
-    console.log(cars[34]);
 
     let filtered_cars = [];
-    const cars_copy = [...cars];
-    cars_copy.forEach((d, i) => {
+    cars.forEach((d, i) => {
         let mismatch = 0;
         keys_to_filter.forEach((k) => {
             if (k === 'Origin') {
@@ -227,7 +225,7 @@ function draw_cars_visualization() {
     // Y axis
     let cars_y_domains = [...new Set(cars.map(d => d[y_variable]))];
     let cars_y_scale = d3.scaleLinear()
-        .domain([(d3.extent(cars_y_domains)[0] - 1), (d3.extent(cars_y_domains)[1] + 1)])
+        .domain([(d3.extent(cars_y_domains)[0] - 1), (d3.extent(cars_y_domains)[1] + 1)].reverse())
         .range([10, attributes.height_cars - attributes.axis.x])
         .nice();
 
@@ -292,11 +290,62 @@ function clean_slate() {
 }
 
 function handleMouseOverBubble(d, i) {
+    const cars_svg = d3.selectAll('#cars-visualization').select('svg');
 
+    d3.selectAll('.bubble')
+        .style('opacity', 0.3);
+
+    d3.select(d.target)
+        .style('opacity', 1)
+        .attr('r', 7)
+        .style('stroke-width', '1px')
+        .style('stroke', 'white')
+        .raise();
+
+    const text_node = cars_svg
+        .append('g')
+        .attr('class', 'car-tooltip')
+        .append("text")
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dx', 0)
+        .attr('y', 20);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text(i.Model + ' (' + i.Year + ')' + ' - ' + i.Origin);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('MPG: ' + i.MPG);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Cylinders: ' + i.Cylinders);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Displacement: ' + i.Displacement);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Horsepower: ' + i.Horsepower);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Weight: ' + i.Weight);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Acceleration: ' + i.Acceleration);
 }
 
 function handleMouseOutBubble(d, i) {
+    d3.selectAll('.bubble')
+        .style('opacity', 0.7)
+        .attr('r', 5)
+        .style('stroke-width', '0px');
 
+    d3.selectAll('.car-tooltip').remove();
 }
 
 function handleMouseClickBubble(d, i) {

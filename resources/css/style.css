@@ -161,18 +161,19 @@ svg {
   opacity: 0.1;
 }
 
-.sentiment-tooltip {
+.car-tooltip {
   fill: #2c3e50;
   font-size: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
 }
-.sentiment-tooltip text tspan:first-child {
+.car-tooltip text tspan:first-child {
   font-weight: bold;
 }
-.sentiment-tooltip text tspan.other-topics {
+.car-tooltip text tspan.other-topics {
   opacity: 0.5;
   font-style: italic;
 }
-.sentiment-tooltip text tspan.tweet-text {
+.car-tooltip text tspan.tweet-text {
   font-style: italic;
 }
 
