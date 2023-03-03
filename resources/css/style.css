@@ -1,0 +1,217 @@
+/**
+ * Custom stylesheet that aggregates all the classes
+ * @author: Ashiqur Rahman
+ */
+/**
+ * File to hold layout related classes
+ */
+.container.header {
+  margin-bottom: 1.5rem;
+}
+
+.image-transitions {
+  position: relative;
+  height: 450px;
+}
+.image-transitions .image {
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  animation: fadeInOut 4s infinite;
+}
+.image-transitions .image.image-1 {
+  opacity: 1;
+}
+.image-transitions .image.image-2 {
+  opacity: 1;
+  animation-delay: 2s;
+}
+.image-transitions .image.image-3 {
+  opacity: 1;
+}
+
+/**
+ * Utility file to hold some text and layout manipulation
+ * @author: Ashiqur Rahman
+ */
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-center {
+  text-align: center;
+}
+.text-justify {
+  text-align: justify;
+}
+
+.w-25 {
+  width: 25%;
+}
+.w-50 {
+  width: 50%;
+}
+.w-75 {
+  width: 75%;
+}
+.w-100 {
+  width: 100%;
+}
+
+.m0 {
+  margin: 0;
+}
+.mt0 {
+  margin-top: 0;
+}
+.mb0 {
+  margin-bottom: 0;
+}
+.ml0 {
+  margin-left: 0;
+}
+.mr0 {
+  margin-right: 0;
+}
+
+.p0 {
+  padding: 0;
+}
+.pt0 {
+  padding-top: 0;
+}
+.pb0 {
+  padding-bottom: 0;
+}
+.pl0 {
+  padding-left: 0;
+}
+.pr0 {
+  padding-right: 0;
+}
+
+.d-none {
+  display: none;
+}
+.d-flex {
+  display: flex;
+}
+.d-block {
+  display: block;
+}
+
+.spacer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  display: block;
+}
+
+/**
+ * Hold the animation related classes
+ */
+@keyframes fadeInOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+/**
+ * Styles for the month controls
+ */
+svg {
+  font-family: "Raleway", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.month-controls {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.month-controls span.month {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+.month-controls span.month.active {
+  font-weight: bold;
+}
+
+.bubble {
+  z-index: 1;
+}
+.bubble .selected {
+  fill: #a00c10;
+  z-index: 2;
+  opacity: 1;
+}
+.bubble .defocus {
+  fill: #aeaeae;
+  z-index: 0;
+  opacity: 0.1;
+}
+
+.sentiment-tooltip {
+  fill: #2c3e50;
+  font-size: 12px;
+}
+.sentiment-tooltip text tspan:first-child {
+  font-weight: bold;
+}
+.sentiment-tooltip text tspan.other-topics {
+  opacity: 0.5;
+  font-style: italic;
+}
+.sentiment-tooltip text tspan.tweet-text {
+  font-style: italic;
+}
+
+#topic-visualization svg g.axis.x {
+  font-size: 12px;
+}
+#topic-visualization svg g.axis.x .tick text {
+  transform: rotate(-65deg);
+}
+
+/**
+ * Style for control elements
+ */
+.filter.badge {
+  background-color: #1abc9c;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-bottom: 0.4rem;
+  margin-right: 0.4rem;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.filter.badge .filter-label {
+  margin-right: 0.4rem;
+}
+.filter.badge .filter-value {
+  margin-right: 0.4rem;
+}
+.filter.badge .filter-close {
+  text-align: right;
+  flex-grow: 1;
+  font-size: 2rem;
+  padding: 0.2rem;
+  line-height: 1.2rem;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=style.css.map */

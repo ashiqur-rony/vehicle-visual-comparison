@@ -1,0 +1,55 @@
+/**
+ * Style for control elements
+ */
+
+// Base Colors
+$shade-10: #2c3e50 !default;
+$shade-1: #d7dcdf !default;
+$shade-0: #fff !default;
+$teal: #1abc9c !default;
+
+// Range Slider
+$range-width: 100% !default;
+
+$range-handle-color: $shade-10 !default;
+$range-handle-color-hover: $teal !default;
+$range-handle-size: 20px !default;
+
+$range-track-color: $shade-1 !default;
+$range-track-height: 10px !default;
+
+$range-label-color: $shade-10 !default;
+$range-label-width: 60px !default;
+
+.filter {
+  &.badge {
+    background-color: $teal;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: $shade-0;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.4rem;
+    margin-right: 0.4rem;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+
+    .filter-label {
+      margin-right: 0.4rem;
+    }
+
+    .filter-value {
+      margin-right: 0.4rem;
+    }
+
+    .filter-close {
+      text-align: right;
+      flex-grow: 1;
+      font-size: 2rem;
+      padding: 0.2rem;
+      line-height: 1.2rem;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Visual Analytics - Vehicle Comparison</title>
+
+    <!-- Mobile Specific Metas
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="resources/libraries/skeleton/normalize.css">
+    <link rel="stylesheet" href="resources/libraries/skeleton/skeleton.css">
+
+    <!-- Default CSS
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="resources/css/style.css">
+
+</head>
+<body>
+<div class="container header">
+    <div class="row">
+        <div class="eight columns">
+            <h5 class="m0">Vehicle Comparison</h5>
+            <em>A visual analysis tool to compare vehicle characteristics and make a purchase decision.</em>
+        </div>
+        <div class="four columns text-right">
+            <strong>Ashiqur Rahman</strong><br/>
+            Department of Computer Science<br/>
+            Northern Illinois University
+        </div>
+    </div>
+</div>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="twelve columns">
+            <p>The user can perform the following actions to explore the visualization:</p>
+            <ul>
+                <li>Choosing any two numerical attributes for the vehicles will update the visualization axis.</li>
+                <li>Selecting a model under the filter will highlight that vehicle in the cluster.</li>
+                <li>Clicking on any of the bubble will filter the visualization based on the properties of the selected
+                    vehicle.
+                </li>
+                <li>Removing the properties from filter will update the visualization by taking only the remaining
+                    properties.
+                </li>
+            </ul>
+        </div>
+        <div class="twelve columns">
+            <div class="spacer"></div>
+            <div class="row">
+                <div class="nine columns">
+                    <div class="visual-axis">
+                        <div class="row">
+                            <div class="four columns" id="x-axis-variable"></div>
+                            <div class="one columns">VS</div>
+                            <div class="four columns" id="y-axis-variable"></div>
+                            <div class="three columns">
+                                <div id="cars-color-legends">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cars-visualization">
+
+                    </div>
+                </div>
+                <div class="three columns">
+                    <div class="visual-filters">
+                        <h5>Filters</h5>
+                        <input type="text" list="car-models" id="filter-car-models" name="filter-car-models"
+                               placeholder="Select a Model">
+                        <datalist id="car-models">
+                        </datalist>
+
+                        <select name="filter-type" id="filter-type" class="d-none">
+                            <option value="up">Equal and above</option>
+                            <option value="down">Equal and below</option>
+                            <option value="equal" selected>Same</option>
+                        </select>
+                    </div>
+
+                    <div class="active-filters" id="active-filters">
+                    </div>
+                </div>
+            </div>
+            <div class="spacer"></div>
+        </div>
+    </div>
+</div>
+<hr />
+<div class="container footer">
+    <div class="row">
+        <div class="twelve columns">
+            <p class="text-right">
+                <small>
+                    Visualization developed by Ashiqur Rahman.<br/>
+                    Email: ashiqur.r@niu.edu<br/>
+                    Last update: 03/03/2023
+                </small>
+            </p>
+        </div>
+    </div>
+</div>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<!-- Loading D3
+    -------------------------------------------------- -->
+<script type="module" src="resources/scripts/d3module.js"></script>
+</body>
+</html>
