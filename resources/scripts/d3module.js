@@ -1,15 +1,16 @@
+/**
+ * D3 Module
+ * Creates a visualization from the CSV data
+ *
+ * @author Ashiqur Rahman
+ * @author_url http://ashiqur.com
+ **/
+
 import * as d3 from "https://cdn.skypack.dev/d3@7";
-
-window.onload = function () {
-    load_data();
-};
-
-function load_data(type) {
-    Promise.all([d3.csv("resources/data/cars_dataset.csv")]).then(createVisualization)
-}
 
 // Define the global variables for the visualization
 let cars, x_variable = 'MPG', y_variable = 'Horsepower', cars_color, attributes, axis_keys;
+// Default values for the filters
 let default_filter = {
     'Model': false,
     'Origin': false,
@@ -21,11 +22,27 @@ let default_filter = {
     'Acceleration': false,
     'Year': false
 }
-
+// Active filters at any point of time
 let active_filter = {...default_filter};
 
 /**
+ * Window is ready, let's go...
+ */
+window.onload = function () {
+    load_data();
+};
+
+/**
+ * Load the data from the CSV file
+ * @param type
+ */
+function load_data(type) {
+    Promise.all([d3.csv("resources/data/cars_dataset.csv")]).then(createVisualization)
+}
+
+/**
  * Function to create the visualization
+ * This function cleans up the data, creates the dropdowns for the axis, color legends and hands over the data to the draw function
  * @param data array of CSV data elements
  */
 function createVisualization(data) {
@@ -127,6 +144,10 @@ function createVisualization(data) {
     draw_cars_visualization();
 }
 
+/**
+ * Function to draw the color legends
+ * @param cars_color_scheme
+ */
 function draw_color_legends(cars_color_scheme) {
     // Add color legends
     let legend_svg = d3.selectAll('#cars-color-legends').append('svg')
@@ -153,10 +174,16 @@ function draw_color_legends(cars_color_scheme) {
         .text(d => d);
 }
 
+/**
+ * Function to draw the scatter plot.
+ * The function first filters the data based on the active filters and then draws the visualization.
+ */
 function draw_cars_visualization() {
 
+    // Not all attributes are active for filtering. We need to select only the active ones.
     let keys_to_filter = Object.keys(active_filter).filter(k => (k !== 'Model' && active_filter[k] !== false));
 
+    // Filter the data based on the active filters
     let filtered_cars = [];
     cars.forEach((d, i) => {
         let mismatch = 0;
@@ -187,7 +214,7 @@ function draw_cars_visualization() {
         }
     });
 
-    // Cars SVG
+    // Create the SVG canvas
     let cars_svg = d3.selectAll('#cars-visualization')
         .append('svg')
         .attr('width', attributes.width_cars)
@@ -249,6 +276,7 @@ function draw_cars_visualization() {
     // Transition
     const t = cars_svg.transition().duration(750);
 
+    // Draw the bubbles
     cars_svg.append('g')
         .selectAll('.bubble')
         .data(filtered_cars)
@@ -273,28 +301,37 @@ function draw_cars_visualization() {
         }, {}));
 }
 
+/**
+ * Handle the change of the X axis variable.
+ */
 function handleXAxisChange() {
     const selected_element = d3.select('#x-variable');
     x_variable = selected_element.node().value;
     redraw_visualization();
 }
 
+/**
+ * Handle the change of the Y axis variable.
+ */
 function handleYAxisChange() {
     const selected_element = d3.select('#y-variable');
     y_variable = selected_element.node().value;
     redraw_visualization();
 }
 
-function clean_slate() {
-    d3.select('#cars-visualization').html('');
-}
-
+/**
+ * Handle the mouse over event on a bubble.
+ * @param d
+ * @param i
+ */
 function handleMouseOverBubble(d, i) {
     const cars_svg = d3.selectAll('#cars-visualization').select('svg');
 
+    // Dim all bubbles
     d3.selectAll('.bubble')
         .style('opacity', 0.3);
 
+    // Highlight the current bubble
     d3.select(d.target)
         .style('opacity', 1)
         .attr('r', 7)
@@ -302,6 +339,7 @@ function handleMouseOverBubble(d, i) {
         .style('stroke', 'white')
         .raise();
 
+    // Show the tooltip
     const text_node = cars_svg
         .append('g')
         .attr('class', 'car-tooltip')
@@ -339,23 +377,43 @@ function handleMouseOverBubble(d, i) {
         .text('Acceleration: ' + i.Acceleration);
 }
 
+/**
+ * Handle the mouse out event on a bubble.
+ * @param d
+ * @param i
+ */
 function handleMouseOutBubble(d, i) {
+    // Reset the bubbles
     d3.selectAll('.bubble')
         .style('opacity', 0.7)
         .attr('r', 5)
         .style('stroke-width', '0px');
 
+    // Remove the tooltip
     d3.selectAll('.car-tooltip').remove();
 }
 
+/**
+ * Handle the mouse click event on a bubble.
+ * @param d
+ * @param i
+ */
 function handleMouseClickBubble(d, i) {
+    // Update the active filter
     active_filter = {...i};
+    // Populate the filter input field
     d3.select('#filter-car-models').node().value = i.Model;
+    // Filter the visualization
     filterChart(active_filter);
 }
 
+/**
+ * Filter the chart based on the active filter.
+ * @param active_filter
+ */
 function filterChart(active_filter) {
     let filter_count = 0;
+    // Show the active filters as badges and update the filter count
     d3.select('#active-filters').html('');
     Object.keys(active_filter).forEach((d, index) => {
         if (d !== 'Model' && active_filter[d] !== false) {
@@ -368,6 +426,7 @@ function filterChart(active_filter) {
         }
     });
 
+    // Show the filter type dropdown if there are active filters
     if (filter_count > 0) {
         d3.select('#filter-type')
             .classed('d-none', false)
@@ -378,14 +437,21 @@ function filterChart(active_filter) {
         resetFilter();
     }
 
+    // Update the visualization
     redraw_visualization();
 
+    // Add the click event to the active filters
     d3.select('#active-filters')
         .selectAll('.filter')
         .on('click', removeFilter);
 }
 
+/**
+ * Remove a filter attribute from the active filter when clicked on the badge.
+ * @param event
+ */
 function removeFilter(event) {
+    // Check if the click target is the close button
     if (event.target.className === 'filter-close') {
         let filter_item = d3.select(this).attr('data-filter');
         active_filter[filter_item] = false;
@@ -393,10 +459,12 @@ function removeFilter(event) {
     }
 }
 
+/**
+ * Highlight the vehicle when the filter input field is changed.
+ */
 function handleCarModelFilter() {
     const selected_element = d3.select('#filter-car-models');
     const selected_car_model = selected_element.node().value;
-    console.log(selected_car_model);
     if (selected_car_model.length == 0) {
         d3.select('#cars-visualization')
             .selectAll('.bubble')
@@ -415,16 +483,32 @@ function handleCarModelFilter() {
     }
 }
 
+/**
+ * Handle the change event on the filter type dropdown.
+ */
 function handleFilterOperationChange() {
     filterChart(active_filter);
 }
 
+/**
+ * Reset the filter when all the filter attributes are removed.
+ */
 function resetFilter() {
     active_filter = {...default_filter};
     d3.select('#filter-car-models').node().value = '';
     redraw_visualization();
 }
 
+/**
+ * Clear the visualization.
+ */
+function clean_slate() {
+    d3.select('#cars-visualization').html('');
+}
+
+/**
+ * Redraw the visualization.
+ */
 function redraw_visualization() {
     if (x_variable !== y_variable) {
         clean_slate();
