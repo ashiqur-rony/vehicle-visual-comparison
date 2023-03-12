@@ -135,15 +135,9 @@ function createVisualization(data) {
         .domain(d3.group(cars, d => d.Cluster).keys())
         .range(d3.schemeTableau10);
 
-    // Show gray when filter is active
-    const gray_color_scheme = d3.scaleOrdinal()
-        .domain(d3.group(cars, d => d.Origin).keys())
-        .range(['#eaeaea']);
-
     // Check if the data is within current month
     // Then either show the data point in color or in gray
     cars_color = function (d) {
-        //@ToDo: Check for filters against d
         return (d3.select('#cluster-checkbox').property('checked') ? cars_cluster_scheme(d.Cluster) : cars_color_scheme(d.Origin));
     };
 
@@ -360,8 +354,17 @@ function handleYAxisChange() {
  * Handle the change of the cluster variable.
  */
 function handleClusterChange() {
-    // const selected_element = d3.select('#cluster-checkbox');
-    // cluster_variable = selected_element.node().value;
+    const selected_element = d3.select('#cluster-checkbox');
+    if(selected_element.property('checked')) {
+        // Show the cluster legends when the checkbox is checked
+        d3.select('#cluster-legends')
+            .classed('d-none', false);
+    } else {
+        // Hide the cluster legends when the checkbox is unchecked
+        d3.select('#cluster-legends')
+            .classed('d-none', true);
+    }
+    // Redraw the visualization
     redraw_visualization();
 }
 
@@ -377,7 +380,7 @@ function handleMouseOverBubble(d, i) {
     d3.selectAll('.bubble')
         .style('opacity', 0.3);
 
-    // Highlight the cluster if necessary
+    // Highlight the whole cluster when the cluster checkbox is checked
     if (d3.select('#cluster-checkbox').property('checked')) {
         d3.selectAll('.bubble.cluster-' + i.Cluster)
             .style('opacity', 1)
@@ -521,12 +524,14 @@ function removeFilter(event) {
 function handleCarModelFilter() {
     const selected_element = d3.select('#filter-car-models');
     const selected_car_model = selected_element.node().value;
-    if (selected_car_model.length == 0) {
+    if (selected_car_model.length === 0) {
+        // Reset the bubbles
         d3.select('#cars-visualization')
             .selectAll('.bubble')
             .attr('r', 5)
             .attr('opacity', 0.7);
     } else {
+        // Highlight the selected bubble by increasing the radius and opacity and dimming the rest
         d3.select('#cars-visualization')
             .selectAll('.bubble')
             .attr('r', 3)
