@@ -409,11 +409,15 @@ function handleMouseOverBubble(d, i) {
     text_node.append('tspan')
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
-        .text('MPG: ' + i.MPG);
+        .text('Cylinders: ' + i.Cylinders);
     text_node.append('tspan')
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
-        .text('Cylinders: ' + i.Cylinders);
+        .text('Weight: ' + i.Weight);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('MPG: ' + i.MPG);
     text_node.append('tspan')
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
@@ -422,10 +426,6 @@ function handleMouseOverBubble(d, i) {
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
         .text('Horsepower: ' + i.Horsepower);
-    text_node.append('tspan')
-        .attr('x', (attributes.width_cars - 200))
-        .attr('dy', '1.2em')
-        .text('Weight: ' + i.Weight);
     text_node.append('tspan')
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
