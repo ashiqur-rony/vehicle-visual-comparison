@@ -200,7 +200,7 @@ function draw_color_legends(cars_color_scheme, cars_cluster_scheme) {
         .attr('dx', 0)
         .attr('y', (d, i) => (20 * i) + 12)
         .text(d => {
-            return (d === -1 ? 'Outlier' : 'Cluster ' + (d + 1));
+            return (d === -1 ? 'Outlier' : 'Cluster ' + d);
         });
 }
 
@@ -433,7 +433,7 @@ function handleMouseOverBubble(d, i) {
     text_node.append('tspan')
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
-        .text('Cluster: ' + (i.Cluster === -1 ? 'Outlier' : i.Cluster + 1));
+        .text('Cluster: ' + (i.Cluster === -1 ? 'Outlier' : i.Cluster));
 }
 
 /**
