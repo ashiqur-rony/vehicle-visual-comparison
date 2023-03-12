@@ -37,7 +37,7 @@ window.onload = function () {
  * @param type
  */
 function load_data(type) {
-    Promise.all([d3.csv("resources/data/cars_dataset.csv")]).then(createVisualization)
+    Promise.all([d3.csv("resources/data/cars_dataset_with_cluster.csv")]).then(createVisualization)
 }
 
 /**
@@ -58,7 +58,8 @@ function createVisualization(data) {
             'Weight': parseInt(d.Weight.trim()),
             'Acceleration': parseFloat(d.Acceleration.trim()),
             'Year': parseInt('19' + d.Year.trim()),
-            'Origin': d.Origin.trim()
+            'Origin': d.Origin.trim(),
+            'Cluster': parseInt(d.Cluster.trim())
         }
     });
 
@@ -80,7 +81,7 @@ function createVisualization(data) {
 
     // Select the numeric axis keys for comparison
     axis_keys = Object.keys(cars[0]).filter(k => {
-        return (k !== 'Model' && k !== 'Origin')
+        return (k !== 'Model' && k !== 'Origin' && k !== 'Cluster');
     });
 
     // Create the X axis options
@@ -107,6 +108,10 @@ function createVisualization(data) {
         .text(d => d)
         .attr('selected', d => (d === y_variable ? 'selected' : null));
 
+    // Handle the checkbox for clustering
+    d3.select('#cluster-checkbox')
+        .on('change', handleClusterChange);
+
     // Populate datalist for car models
     let car_models = [...new Set(d3.group(cars, d => d.Model).keys())];
     d3.select('#car-models')
@@ -125,6 +130,11 @@ function createVisualization(data) {
         .domain(d3.group(cars, d => d.Origin).keys())
         .range(d3.schemeSet2);
 
+    // Default colors for all the clusters
+    const cars_cluster_scheme = d3.scaleOrdinal()
+        .domain(d3.group(cars, d => d.Cluster).keys())
+        .range(d3.schemeTableau10);
+
     // Show gray when filter is active
     const gray_color_scheme = d3.scaleOrdinal()
         .domain(d3.group(cars, d => d.Origin).keys())
@@ -134,11 +144,11 @@ function createVisualization(data) {
     // Then either show the data point in color or in gray
     cars_color = function (d) {
         //@ToDo: Check for filters against d
-        return cars_color_scheme(d.Origin);
+        return (d3.select('#cluster-checkbox').property('checked') ? cars_cluster_scheme(d.Cluster) : cars_color_scheme(d.Origin));
     };
 
     // Draw color legends
-    draw_color_legends(cars_color_scheme);
+    draw_color_legends(cars_color_scheme, cars_cluster_scheme);
 
     // Draw the visualization
     draw_cars_visualization();
@@ -148,7 +158,7 @@ function createVisualization(data) {
  * Function to draw the color legends
  * @param cars_color_scheme
  */
-function draw_color_legends(cars_color_scheme) {
+function draw_color_legends(cars_color_scheme, cars_cluster_scheme) {
     // Add color legends
     let legend_svg = d3.selectAll('#cars-color-legends').append('svg')
         .attr('width', 150)
@@ -172,6 +182,32 @@ function draw_color_legends(cars_color_scheme) {
         .attr('dx', 0)
         .attr('y', (d, i) => (20 * i) + 12)
         .text(d => d);
+
+    // Add cluster legends
+    let cluster_legend_svg = d3.selectAll('#cluster-legends').append('svg')
+        .attr('width', 150)
+        .attr('height', 250)
+        .attr('class', 'color-legend');
+
+    cluster_legend_svg.selectAll('rect')
+        .data(cars_cluster_scheme.domain().sort((a, b) => a - b))
+        .join('rect')
+        .attr('class', 'legend-color')
+        .attr('width', 10)
+        .attr('height', 10)
+        .attr('x', 10)
+        .attr('y', (d, i) => (20 * i))
+        .attr('fill', d => cars_cluster_scheme(d));
+
+    cluster_legend_svg.selectAll('text')
+        .data(cars_cluster_scheme.domain().sort((a, b) => a - b))
+        .join('text')
+        .attr('x', 30)
+        .attr('dx', 0)
+        .attr('y', (d, i) => (20 * i) + 12)
+        .text(d => {
+            return (d === -1 ? 'Outlier' : 'Cluster ' + (d + 1));
+        });
 }
 
 /**
@@ -281,7 +317,7 @@ function draw_cars_visualization() {
         .selectAll('.bubble')
         .data(filtered_cars)
         .join('circle')
-        .attr('class', d => 'bubble bubble-' + d.Origin.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') + ' ' + d.Model.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-'))
+        .attr('class', d => 'bubble bubble-' + d.Origin.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') + ' ' + d.Model.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-') + ' cluster-' + d.Cluster)
         .on('mouseover', handleMouseOverBubble)
         .on('mouseout', handleMouseOutBubble)
         .on('click', handleMouseClickBubble)
@@ -293,6 +329,7 @@ function draw_cars_visualization() {
         .transition(t)
         .attr('data-model', d => d.Model.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-'))
         .attr('data-origin', d => d.Origin.toLowerCase().replace(/[^a-zA-Z0-9]/g, '-'))
+        .attr('data-cluster', d => d.Cluster)
         .attr(axis_keys.reduce(function (result, attr) {
             result[attr] = function (d) {
                 return attr in d ? d[attr] : null;
@@ -320,6 +357,15 @@ function handleYAxisChange() {
 }
 
 /**
+ * Handle the change of the cluster variable.
+ */
+function handleClusterChange() {
+    // const selected_element = d3.select('#cluster-checkbox');
+    // cluster_variable = selected_element.node().value;
+    redraw_visualization();
+}
+
+/**
  * Handle the mouse over event on a bubble.
  * @param d
  * @param i
@@ -331,6 +377,12 @@ function handleMouseOverBubble(d, i) {
     d3.selectAll('.bubble')
         .style('opacity', 0.3);
 
+    // Highlight the cluster if necessary
+    if (d3.select('#cluster-checkbox').property('checked')) {
+        d3.selectAll('.bubble.cluster-' + i.Cluster)
+            .style('opacity', 1)
+            .raise();
+    }
     // Highlight the current bubble
     d3.select(d.target)
         .style('opacity', 1)
@@ -375,6 +427,10 @@ function handleMouseOverBubble(d, i) {
         .attr('x', (attributes.width_cars - 200))
         .attr('dy', '1.2em')
         .text('Acceleration: ' + i.Acceleration);
+    text_node.append('tspan')
+        .attr('x', (attributes.width_cars - 200))
+        .attr('dy', '1.2em')
+        .text('Cluster: ' + (i.Cluster === -1 ? 'Outlier' : i.Cluster + 1));
 }
 
 /**
